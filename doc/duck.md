@@ -28,6 +28,7 @@ current domain requirements don't seem to require much coordination... We'll sta
 
 U: How to use datomic
 K: basic idea of building an API with Clojure. See clj-test repository for example
+- http://clojure-doc.org/articles/tutorials/basic_web_development.html
 
 U: Architecture and overall design
 - It seems to make sense that I use what I learned from Domain Modeling Made Functional. 
@@ -145,3 +146,37 @@ type ListRecipes = unit -> ReadModels.RecipeListItem list
 type ViewRecipeDetails = RecipeId -> ReadModels.RecipeDetails
 
 ```
+
+
+## Spec learnings
+
+https://clojure.org/guides/spec
+
+
+I like how function specs `fdef` effect documentation and compiler warnings. 
+- this is true integrated design-by-contract
+- `defn` supports a weaker `{:pre ... :post ...}` paradigm
+  - pre and post don't show in docs :(
+
+Q: does `fdef` need to applied to an existing function definition?
+- A: sorta, it requires a "symbol naming a function"
+  - the fspec can be defined before the function
+  - the function must have the same name  
+Q: can `fspec` be used to define function specs to test later conformity
+- A:? appears to be a no.
+```clj
+(s/valid? (s/fspec :args string? :ret string?) identity) ;; false
+
+(def nope identity)
+(s/valid? (s/fspec :args string? :ret string?) nope) ;; false
+
+(s/conform (s/fspec :args string? :ret string?) identity) ;; invalid
+
+(defn strmap [s] {:pre [(s/valid? string? s)] :post [(s/valid? string? %)]} s)
+(s/valid? (s/fspec :args string? :ret string?) strmap) ;; false
+
+(s/fdef strmap :args string? :ret string?)
+(s/valid? strmap strmap) ;; true
+```
+
+
