@@ -180,3 +180,30 @@ Q: can `fspec` be used to define function specs to test later conformity
 ```
 
 
+## Datomic learnings
+
+[Tutorial series](https://www.youtube.com/watch?list=PLZdCLR02grLpRgqU50KY3YfMePw1SHnpp&v=faoXSarGgEI&ab_channel=ClojureTV)
+
+### Install
+
+The install process for Datomic was very frustrating. First, I'd expect it to be available via the standard package source: clojars. There are many datomic packages, but they're all unoffical as the framework is no longer distributed that way.
+
+The instructions for dev-local are split between https://docs.datomic.com/cloud/dev-local.html and a link in the email you get with credentials.
+
+The install instructions from the first link don't even work on windows. The second link has three set of *alternative* instructions, but it isn't clear that they are strict alternatives. I ended up concluding that maven, deps.edn, and lein are not friendly with each other. I'm using lein, so following the other directions just ended up leading me to a dead end.
+
+Short version
+- add repository configuration to lein
+  - this includes potential maven repositories, no need to have maven, a pom.xml, or a deps.edn
+- Set environment variables for username and password
+  - [or use an encrypted password field](https://github.com/technomancy/leiningen/blob/master/doc/DEPLOY.md#gpg)
+  - [or use a profile](https://github.com/technomancy/leiningen/blob/master/doc/DEPLOY.md#full-disk-encryption)
+```clj
+:repositories [
+              ["cognitect-dev-tools" {:url      "https://dev-tools.cognitect.com/maven/releases/"
+                                      :username :env/username_var_here
+                                      :password :env/pw_var__here }]]
+```
+
+And that's all I really needed from the get go. I didn't need to install or download anything
+                  
