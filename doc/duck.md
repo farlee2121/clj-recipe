@@ -196,7 +196,7 @@ The install process for Datomic was very frustrating. First, I'd expect it to be
 
 The instructions for dev-local are split between https://docs.datomic.com/cloud/dev-local.html and a link in the email you get with credentials.
 
-The install instructions from the first link don't even work on windows. The second link has three set of *alternative* instructions, but it isn't clear that they are strict alternatives. I ended up concluding that maven, deps.edn, and lein are not friendly with each other. I'm using lein, so following the other directions just ended up leading me to a dead end.
+The install instructions from the first link don't work on windows. The second link has three set of *alternative* instructions, but it isn't clear that they are strict alternatives. I ended up concluding that maven, deps.edn, and lein are not friendly with each other. I'm using lein, so following the other directions just ended up leading me to a dead end.
 
 Short version
 - add repository configuration to lein
