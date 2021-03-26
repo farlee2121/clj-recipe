@@ -32,11 +32,21 @@
                 ::ingredient-list
                 ::instruction-list]))
 
+
 (s/def ::create-recipe-command 
-       (s/key :req [
+       (s/keys :req [
                     ::unvalidated-recipe
        ]))
+(s/def ::recipe-created (s/keys :req [::validated-recipe]))
 
-(s/def ::recipe-created (s/key :req [::validated-recipe]))
+;; (def create-recipe (s/fspec {:args ::create-recipe-command :ret ::recipe-created} ))
+(s/fdef create-recipe 
+        :args ::create-recipe-command 
+        :ret ::recipe-created)
 
-(def create-recipe (s/fspec {:args ::create-recipe-command :ret ::recipe-created} ))
+(s/def ::str-pred (s/fspec :args string? :ret boolean?))
+
+(s/valid? ::str-pred (fn [s] true))
+;; (s/fdef delete-recipe
+;;   :args ::create-recipe-command
+;;   :ret ::recipe-created)

@@ -49,7 +49,7 @@ U: How do I want to represent the recipe parts?
   - pro: can differentiate ingredient list from steps just by which field they added it to
   - pro: gain powerful formatting with minimal effort
     - e.g. they can now add sections for parts of the recipe like Sauce Ingredients
-  - pro: simplier UI and data model for steps and ingredients
+  - pro: simpler UI and data model for steps and ingredients
   - con: easy for them to enter nonsense
   - con: need to sanitize the input
   - con?: They can add pretty much whatever, it need not be a recipe
@@ -177,8 +177,14 @@ Q: can `fspec` be used to define function specs to test later conformity
 
 (s/fdef strmap :args string? :ret string?)
 (s/valid? strmap strmap) ;; true
+
+(s/def ::str-pred (s/fspec :args string? :ret boolean?))
+(s/valid ::str-pred (fn [s] true)) ;; false
 ```
 
+I suppose I could define the function specs in a way that they can be applied to arbitrary functions later
+- OPT: bind the keys to a symbol and apply them later using `s/fdef`
+- OPT: build each spec into a macro so I can call it on arbirary symbols later
 
 ## Datomic learnings
 
@@ -206,4 +212,46 @@ Short version
 ```
 
 And that's all I really needed from the get go. I didn't need to install or download anything
-                  
+
+
+### Datomic querying
+
+It looks like index-pull is the way to traverse whole tables/databases
+[index pull doc](https://docs.datomic.com/on-prem/query/index-pull.html#indexes)
+
+There are several main indexes for different purposes
+- :aevt when the property is of first importance (like listing all ids)
+- :eavt for getting whole entities at a time
+- :avet for lookup of all instances of a field that contain a certain value
+- :vaet value lookup is of first importance (more what I think of a traditional sql index)
+
+## Test API
+
+I want to bring test API over to clojure. The test portability isn't something i'm willing to give up.
+Clojure does not have records or interfaces. My experiments also showed limitations in spec for functions. I don't think prevent me from just making a map of functions that meet a signature.
+
+I asked some StackOverflow questions about constrained function groupings
+- https://stackoverflow.com/questions/66555972/can-i-validate-functions-with-clojure-spec
+- https://stackoverflow.com/questions/66555904/can-clojure-spec-be-used-to-constrain-protocol-argument-and-return-types
+
+
+It currently appears that I cannot really constrain the test api inputs and outputs. This means that I can use a protocol or map to define the set of operations, but I can't really give the tester any information about the expected data.
+
+
+## REPL Learnings
+
+A few things that ate time or have tripped me up more than once
+
+If a namespace won't load **look real hard at the file name**. Make sure it doesn't have any dashes
+
+Aliasing apparently doesn't work for individual functions. For example, none of the following work
+- `[java.util.UUID/randomUUID :as new-id]`
+- `[java.util.UUID :as id]`
+- `[java.util :refer [UUID :as id]]`
+
+They throw the unhelpful error 
+```
+Syntax error macroexpanding clojure.core/ns at ... - failed: Extra input spec: :clojure.core.specs.alpha/ns-form
+```
+
+switch active namespace if you want to test relative to a different file using `in-ns`
