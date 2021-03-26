@@ -1,9 +1,14 @@
 (ns clj-recipe.datomic-experiments
-  (:require [datomic.client.api :as d]))
+  (:require [datomic.client.api :as d]
+            [clojure.spec.gen.alpha :as gen]
+            [clojure.spec.alpha :as s]
+            [clj-recipe.model :as model]))
 
 
 (def client (d/client {:server-type :dev-local
                        :system "recipe-experiments"}))
+
+(defn new-id [] (java.util.UUID/randomUUID))
 
 (def db-name "recipes")
 (d/create-database client {:db-name db-name})
@@ -68,13 +73,24 @@
   (d/pull (d/db conn) '[*] [:recipe/id id]))
 
 (defn upsert [recipe]
-  (d/transact conn {:tx-data [recipe]})
-  )
+  (d/transact conn {:tx-data [recipe]}))
 
-(defn gen-recipe 
-  ([] )
-  ([title] )
-  )
+(defn gen-recipe
+  ([]  (let [recipe (gen/generate (s/gen ::model/validated-recipe))]
+         {:recipe/id (new-id)
+          :recipe/title (recipe ::model/recipe-title)
+          :recipe/instructions (recipe ::model/instruction-list)
+          :recipe/ingredients (recipe ::model/ingredient-list)}))
+  ([title] (assoc (gen-recipe) :recipe/title title)))
+
+
+(defn get-title [title]
+  (d/q '[:find ?e 
+         :in $ ?title
+         :where [?e :recipe/title ?title]]
+       (d/db conn)
+       title)
+)
 
 ;; todo
 ;; - write a query on recipe

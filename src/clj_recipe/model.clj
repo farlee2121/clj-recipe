@@ -2,21 +2,28 @@
     (:require [clojure.spec.alpha :as s])
 )
 
+(defmacro spec-derive [spec-key]
+    `(s/with-gen 
+     #(s/valid? ~spec-key %)
+     #(s/gen ~spec-key)
+      )
+)
+
 (s/def ::recipe-title (s/and 
                        string?
-                       #(re-matches #"" %)
-                       #(let [len (count %)] (and (< 0 count) (< count 100)))
+                       #(re-matches #"[\w ]+" %)
+                       #(let [len (count %)] (and (< 0 len) (< len 100)))
                        ))
 (s/def ::unvalidated-recipe-title string?)
 (s/def ::unsanitized-markdown string?)
-(s/def ::unvalidated-ingredients #(s/valid? ::unsanitized-markdown %))
-(s/def ::unvalidated-instructions #(s/valid? ::unsanitized-markdown %))
+(s/def ::unvalidated-ingredients  (spec-derive ::unsanitized-markdown))
+(s/def ::unvalidated-instructions (spec-derive ::unsanitized-markdown))
 
 (s/def ::sanitized-markdown string?)
 
 ;;would derive be better here?
-(s/def ::ingredient-list #(s/valid? ::sanitized-markdown %))
-(s/def ::instruction-list #(s/valid? ::sanitized-markdown %))
+(s/def ::ingredient-list (spec-derive ::sanitized-markdown))
+(s/def ::instruction-list (spec-derive ::sanitized-markdown))
 (s/def ::recipe-id uuid?)
 
 (s/def ::unvalidated-recipe 
