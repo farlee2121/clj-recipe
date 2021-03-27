@@ -16,14 +16,14 @@
                        ))
 (s/def ::unvalidated-recipe-title string?)
 (s/def ::unsanitized-markdown string?)
-(s/def ::unvalidated-ingredients  (spec-derive ::unsanitized-markdown))
-(s/def ::unvalidated-instructions (spec-derive ::unsanitized-markdown))
+(s/def ::unvalidated-ingredients ::unsanitized-markdown)
+(s/def ::unvalidated-instructions ::unsanitized-markdown)
 
 (s/def ::sanitized-markdown string?)
 
 ;;would derive be better here?
-(s/def ::ingredient-list (spec-derive ::sanitized-markdown))
-(s/def ::instruction-list (spec-derive ::sanitized-markdown))
+(s/def ::ingredient-list ::sanitized-markdown)
+(s/def ::instruction-list ::sanitized-markdown)
 (s/def ::recipe-id uuid?)
 
 (s/def ::unvalidated-recipe 
