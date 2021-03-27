@@ -184,7 +184,7 @@ Q: can `fspec` be used to define function specs to test later conformity
 
 I suppose I could define the function specs in a way that they can be applied to arbitrary functions later
 - OPT: bind the keys to a symbol and apply them later using `s/fdef`
-- OPT: build each spec into a macro so I can call it on arbirary symbols later
+- OPT: build each spec into a macro so I can call it on arbitrary symbols later
 
 ## Datomic learnings
 
@@ -228,7 +228,7 @@ There are several main indexes for different purposes
 ## Test API
 
 I want to bring test API over to clojure. The test portability isn't something i'm willing to give up.
-Clojure does not have records or interfaces. My experiments also showed limitations in spec for functions. I don't think prevent me from just making a map of functions that meet a signature.
+Clojure does not have records or interfaces. My experiments also showed limitations in spec for functions. 
 
 I asked some StackOverflow questions about constrained function groupings
 - https://stackoverflow.com/questions/66555972/can-i-validate-functions-with-clojure-spec
