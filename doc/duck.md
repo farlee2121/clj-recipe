@@ -7,24 +7,24 @@ I want to improve my clojure skills
 
 ## Requirements & constraints
 This project should
-- require a full-stack (api, logic, storage, maybe UI)
-- use datomic in some way
-- Try to coordinate a few different modules
-  - require some composition
-- Include tests
+- REQ: require a full-stack (api, logic, storage, maybe UI)
+- REQ: use datomic in some way
+- REQ: Try to coordinate a few different modules
+  - REQ: require some composition
+- REQ: Include tests
 
 Domain requirements
-- View a list of recipes
-- Add a new recipe
-  - Title, ingredients, instructions
-- View recipe details
-- Update a recipe
-- Delete a recipe
+- REQ: View a list of recipes
+- REQ: Add a new recipe
+  - REQ: Title, ingredients, instructions
+- REQ: View recipe details
+- REQ: Update a recipe
+- REQ: Delete a recipe
 - rate a recipe?
 
 current domain requirements don't seem to require much coordination... We'll start here though. We can add later
 
-## Knowns & Unknowns
+## Exploration: Knowns & Unknowns
 
 U: How to use datomic
 K: basic idea of building an API with Clojure. See clj-test repository for example
@@ -180,6 +180,8 @@ Q: can `fspec` be used to define function specs to test later conformity
 
 (s/def ::str-pred (s/fspec :args string? :ret boolean?))
 (s/valid ::str-pred (fn [s] true)) ;; false
+
+(s/valid? (s/fspec :args (s/cat :arg1 string?) :ret string?) identity) ;; true!
 ```
 
 I suppose I could define the function specs in a way that they can be applied to arbitrary functions later
